@@ -1,0 +1,53 @@
+START : 
+                             LDA C04F // Loads into Acc the lenght of the message
+                             LXI H,C050 // Loads into HL the address of the 1st letter
+                             MVI D,FB // Move to D the result of (O - T)
+	MVI E,13 // Move to E the result of (T - A)
+                             
+                             MOV C,A // Saves into C (counter) the size of the message
+	PUSH B // Saves the initial value in the stack for later use
+	PUSH H // Saves the initial message address for later use
+
+LOOPSTART : 
+	CALL SUBTRACTION
+	CMP D
+                             JNZ LOOPSTART // If the difference between letters isn't 0
+                             
+	CALL SUBTRACTION
+	CMP E
+	JNZ LOOPSTART
+	
+	JMP SETCAESARSHIFT // Conditions met, so set the shift
+
+SUBTRACTION:
+	MOV A,M // Moves into the Acc the current letter
+                             INX H // Increments the address in HL to read the next letter
+                             DCR C
+	JM END // If the message is over, jump to the end
+
+	SUB M // Acc - letter in HL
+	RET
+
+SETCAESARSHIFT:
+	MOV A,M
+	SBI 41 // Calculate (letter - A)
+	POP H // Gab the initial value of the message
+	POP B // Grab the initial value of the counter
+	MOV B,A // Move to B the result, making it the current shift
+
+DECRYPTIONLOOP:
+	CALL DECRYPT
+	INX H
+	DCR C
+	JZ END // If the message is over, jump to the end	
+	JNZ DECRYPTIONLOOP // Else, continue the loop
+
+DECRYPT:
+	MOV A,M
+	SUB B // Subtract the shift to Acc so the letter reverts to decrypt it
+	MOV M,A // Return to M the decrypted letter
+	RET
+
+END:
+	MOV A,B // Places into the Acc the shift that was used
+	HLT

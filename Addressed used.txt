@@ -1,0 +1,2 @@
+For the program itself, using the simulator provided in the professor's website, all addresses from C000 to C03C were used for the program itself.
+Besides that, C04F was used to store the message's length and C050 onwards as the message itself.
