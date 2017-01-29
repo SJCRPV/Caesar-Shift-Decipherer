@@ -1,17 +1,17 @@
 START : 
-                             LDA C04F // Loads into Acc the lenght of the message
-                             LXI H,C050 // Loads into HL the address of the 1st letter
-                             MVI D,FB // Move to D the result of (O - T)
+        LDA C04F // Loads into Acc the lenght of the message
+        LXI H,C050 // Loads into HL the address of the 1st letter
+        MVI D,FB // Move to D the result of (O - T)
 	MVI E,13 // Move to E the result of (T - A)
                              
-                             MOV C,A // Saves into C (counter) the size of the message
+        MOV C,A // Saves into C (counter) the size of the message
 	PUSH B // Saves the initial value in the stack for later use
 	PUSH H // Saves the initial message address for later use
 
 LOOPSTART : 
 	CALL SUBTRACTION
 	CMP D
-                             JNZ LOOPSTART // If the difference between letters isn't 0
+        JNZ LOOPSTART // If the difference between letters isn't 0
                              
 	CALL SUBTRACTION
 	CMP E
@@ -21,8 +21,8 @@ LOOPSTART :
 
 SUBTRACTION:
 	MOV A,M // Moves into the Acc the current letter
-                             INX H // Increments the address in HL to read the next letter
-                             DCR C
+        INX H // Increments the address in HL to read the next letter
+        DCR C
 	JM END // If the message is over, jump to the end
 
 	SUB M // Acc - letter in HL
